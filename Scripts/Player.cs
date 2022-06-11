@@ -4,18 +4,20 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-
+    //Atributos
     [SerializeField] private int   life;
     [SerializeField] private float velocity;
     [SerializeField] private float force;
     [SerializeField] private bool  live;
     [SerializeField] private bool  stunned;
 
+    //Componentes auxiliares
+    private Rigidbody2D rigidBody2D;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        this.rigidBody2D = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -24,11 +26,23 @@ public class Player : MonoBehaviour
         //Joystick
         if (Input.GetKey("a")) Left();
         if (Input.GetKey("d")) Right();
+        if (Input.GetKeyDown("space")) Jump();
     }
 
     public void Left()
     {
         HorizontalWalk(-Velocity);
+    }
+
+    //Pulo
+    public void Jump()
+    {
+        ForceTo(transform.up * Force);
+    }
+
+    private void ForceTo(Vector2 v)
+    {
+        rigidBody2D.AddForce(v, ForceMode2D.Impulse);
     }
 
     //Movimentação horizontal
@@ -39,7 +53,8 @@ public class Player : MonoBehaviour
 
     private void HorizontalWalk(float velocity)
     {
-        transform.Translate(Time.deltaTime * velocity, 0, 0);
+        //transform.Translate(Time.deltaTime * velocity, 0, 0);
+        transform.position += transform.right * Time.deltaTime * velocity;
     }
 
 
